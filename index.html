@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You've Hit the Jackpot, Min! 💖</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Insert Coin Start Screen -->
+    <div class="insert-coin-overlay" id="insertCoinOverlay">
+        <div class="arcade-screen">
+            <h1 class="arcade-title">Valentine Jackpot</h1>
+            <div class="pixel-heart">
+                <div class="heart-line"> ♥♥ ♥♥ </div>
+                <div class="heart-line"> ♥♥♥♥ ♥♥♥♥ </div>
+                <div class="heart-line">♥♥♥♥♥♥♥♥♥♥♥</div>
+                <div class="heart-line"> ♥♥♥♥♥♥♥♥♥ </div>
+                <div class="heart-line"> ♥♥♥♥♥♥♥ </div>
+                <div class="heart-line"> ♥♥♥♥♥ </div>
+                <div class="heart-line"> ♥♥♥ </div>
+                <div class="heart-line"> ♥ </div>
+            </div>
+            <div class="insert-coin-text">Insert Coin</div>
+            <button class="press-start-button" id="pressStartButton">Press Start</button>
+            <div class="credits">Credits: ∞</div>
+        </div>
+    </div>
+
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="soundToggle" title="Toggle Sound Effects">🔊</button>
+
+    <!-- Music Toggle -->
+    <button class="music-toggle" id="musicToggle" title="Toggle Background Music">🎵</button>
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- Hero Header -->
+    <header class="hero">
+        <h1 class="hero-title">You've Hit the Jackpot, Min! 🎰💖</h1>
+        <p class="hero-subtitle">Let's spin for the perfect date night...</p>
+    </header>
+
+    <!-- Slot Machine Section -->
+    <main class="main-content">
+        <div class="slot-machine-container">
+            <h2 class="section-title">Date Night Slot Machine</h2>
+
+            <div class="slot-machine">
+                <!-- Reel 1: Food -->
+                <div class="reel" id="reel1">
+                    <div class="reel-strip">
+                        <div class="reel-item">🌮<br><span>Tacos</span></div>
+                        <div class="reel-item">🍣<br><span>Sushi</span></div>
+                        <div class="reel-item">🍝<br><span>Italian</span></div>
+                        <div class="reel-item">🏠<br><span>Home-cooked</span></div>
+                    </div>
+                </div>
+
+                <!-- Reel 2: Activity -->
+                <div class="reel" id="reel2">
+                    <div class="reel-strip">
+                        <div class="reel-item">🎬<br><span>Movie Night</span></div>
+                        <div class="reel-item">🎮<br><span>Arcade</span></div>
+                        <div class="reel-item">🎤<br><span>Karaoke</span></div>
+                        <div class="reel-item">💃<br><span>Dancing</span></div>
+                    </div>
+                </div>
+
+                <!-- Reel 3: Dessert -->
+                <div class="reel" id="reel3">
+                    <div class="reel-strip">
+                        <div class="reel-item">🍦<br><span>Ice Cream</span></div>
+                        <div class="reel-item">🍰<br><span>Cheesecake</span></div>
+                        <div class="reel-item">🍫<br><span>Choco Fondue</span></div>
+                        <div class="reel-item">💋<br><span>Kisses</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spin Result Message -->
+            <div class="result-message" id="resultMessage"></div>
+
+            <!-- Date Reveal (Hidden until jackpot) -->
+            <div class="date-reveal" id="dateReveal">
+                <div class="reveal-title">Jackpot Combo Unlocked!</div>
+                <div class="reveal-divider">━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="reveal-combo" id="revealCombo"></div>
+                <div class="reveal-divider">━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="reveal-subtitle">Date Night Scheduled:</div>
+                <div class="reveal-date" id="revealDate">Saturday, Feb 14th</div>
+                <div class="reveal-time" id="revealTime">7:00 PM</div>
+            </div>
+
+            <!-- Spin Button -->
+            <button class="spin-button" id="spinButton">
+                <span class="button-text">SPIN THE WHEEL! 🎰</span>
+            </button>
+
+            <div class="spin-counter" id="spinCounter">Spins Left: 3</div>
+        </div>
+
+        <!-- Valentine Question Section -->
+        <div class="valentine-section" id="valentineSection">
+            <h2 class="question-title">Will you be my Valentine? 💝</h2>
+
+            <div class="button-container">
+                <button class="yes-button" id="yesButton">Yes! 💖</button>
+                <button class="no-button" id="noButton">No</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Confetti Container -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Multi-Stage Celebration Finale -->
+    <div class="celebration-overlay" id="celebrationOverlay">
+        <!-- Stage 1: Initial Confetti + Message -->
+        <div class="finale-stage" id="finaleStage1">
+            <div class="celebration-content">
+                <h1 class="celebration-title">I already knew you'd say yes! 💖</h1>
+                <p class="celebration-message">Can't wait for our date!</p>
+                <div class="final-hearts">💕 💖 💗 💓 💝</div>
+            </div>
+        </div>
+
+        <!-- Stage 2: Photo Carousel -->
+        <div class="finale-stage hidden" id="finaleStage2">
+            <div class="photo-carousel">
+                <h2 class="stage-title">Our Favorite Memories 📸</h2>
+                <div class="carousel-container">
+                    <div class="carousel-photo active" data-index="0">
+                        <img src="Images/7068D92E-D7C8-4F4C-A4CF-AB3A66138B4A_1_105_c.jpeg" alt="Memory 1">
+                        <p class="photo-caption">Memory Unlocked: Our First Adventure 💕</p>
+                    </div>
+                    <div class="carousel-photo" data-index="1">
+                        <img src="Images/image.png" alt="Memory 2">
+                        <p class="photo-caption">Level Up: Best Date Ever ✨</p>
+                    </div>
+                    <div class="carousel-photo" data-index="2">
+                        <img src="Images/image copy.png" alt="Memory 3">
+                        <p class="photo-caption">Achievement: Making Memories 🎮</p>
+                    </div>
+                    <div class="carousel-photo" data-index="3">
+                        <img src="Images/image copy 2.png" alt="Memory 4">
+                        <p class="photo-caption">Bonus Round: Just Us Being Silly 😄</p>
+                    </div>
+                    <div class="carousel-photo" data-index="4">
+                        <img src="Images/image copy 3.png" alt="Memory 5">
+                        <p class="photo-caption">Jackpot: Every Moment With You 💖</p>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="carouselPrev">◄</button>
+                    <span class="carousel-indicator" id="carouselIndicator">1 / 5</span>
+                    <button class="carousel-btn" id="carouselNext">►</button>
+                </div>
+                <button class="continue-btn" id="continueFromPhotos">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Stage 3: Typewriter Love Letter -->
+        <div class="finale-stage hidden" id="finaleStage3">
+            <div class="typewriter-container">
+                <h2 class="stage-title terminal">► A Message For You:</h2>
+                <div class="typewriter-content" id="typewriterContent"></div>
+                <div class="typing-cursor">_</div>
+                <button class="continue-btn hidden" id="continueFromLetter">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Stage 4: Reasons Scroller -->
+        <div class="finale-stage hidden" id="finaleStage4">
+            <div class="reasons-container">
+                <h2 class="stage-title">Reasons I Love You 💝</h2>
+                <div class="reasons-scroller" id="reasonsScroller"></div>
+                <button class="continue-btn" id="continueFromReasons">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Stage 5: Mini Game -->
+        <div class="finale-stage hidden" id="finaleStage5">
+            <div class="game-container">
+                <h2 class="stage-title">Bonus Round Unlocked! 🕹️</h2>
+                <p class="game-instructions">Catch the hearts! Use ← and → arrows or touch to move</p>
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+                <div class="game-stats">
+                    <div>Score: <span id="gameScore">0</span></div>
+                    <div>Time: <span id="gameTime">30</span>s</div>
+                </div>
+                <button class="continue-btn hidden" id="continueFromGame">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Stage 6: Countdown Timer -->
+        <div class="finale-stage hidden" id="finaleStage6">
+            <div class="countdown-container">
+                <h2 class="stage-title">Next Date Night In:</h2>
+                <div class="countdown-display">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdownDays">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdownHours">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdownMinutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdownSeconds">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+                <p class="countdown-message">Psst... try typing "MIN" anytime 😉</p>
+                <button class="continue-btn" id="restartBtn">Replay Experience</button>
+            </div>
+        </div>
+
+        <!-- Secret Easter Egg Popup -->
+        <div class="secret-popup hidden" id="secretPopup">
+            <div class="secret-content">
+                <h3>Secret Unlocked! 🔓</h3>
+                <p>You found it! You're not just my Valentine - you're my everything. 💖✨</p>
+                <button class="close-secret">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

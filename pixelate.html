@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixelate Photos</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+        }
+
+        canvas {
+            border: 2px solid #0f0;
+            margin: 10px;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        button {
+            background: #0f0;
+            color: #000;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        #status {
+            margin: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎮 Photo Pixelator</h1>
+    <div id="status">Ready to pixelate images...</div>
+    <div class="controls">
+        <button onclick="processAllImages()">Pixelate All Images</button>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        const PIXEL_SIZE = 12; // Size of pixel blocks for retro effect
+        const MAX_WIDTH = 800; // Max width for optimized web images
+
+        const imageFiles = [
+            '7068D92E-D7C8-4F4C-A4CF-AB3A66138B4A_1_105_c.jpeg',
+            'image.png',
+            'image copy.png',
+            'image copy 2.png',
+            'image copy 3.png'
+        ];
+
+        async function pixelateImage(filename, index) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+
+                img.onload = function () {
+                    // Calculate scaled dimensions
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > MAX_WIDTH) {
+                        height = (height * MAX_WIDTH) / width;
+                        width = MAX_WIDTH;
+                    }
+
+                    // Create canvas for pixelation
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+
+                    // Draw image first
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Apply pixelation effect
+                    const imageData = ctx.getImageData(0, 0, width, height);
+                    const pixelated = pixelateImageData(imageData, PIXEL_SIZE);
+                    ctx.putImageData(pixelated, 0, 0);
+
+                    // Display result
+                    const resultsDiv = document.getElementById('results');
+                    const container = document.createElement('div');
+                    container.innerHTML = `
+                        <h3>Photo ${index + 1} - Pixelated</h3>
+                        <p>Original: ${filename}</p>
+                    `;
+                    canvas.style.maxWidth = '100%';
+                    container.appendChild(canvas);
+
+                    // Create download link
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = canvas.toDataURL('image/png');
+                    downloadLink.download = `photo${index + 1}_pixelated.png`;
+                    downloadLink.textContent = `💾 Download Photo ${index + 1} (Right-click → Save)`;
+                    downloadLink.style.display = 'block';
+                    downloadLink.style.margin = '10px 0';
+                    downloadLink.style.color = '#0f0';
+                    container.appendChild(downloadLink);
+
+                    resultsDiv.appendChild(container);
+                    resolve();
+                };
+
+                img.onerror = () => reject(`Failed to load ${filename}`);
+                img.src = `Images/${filename}`;
+            });
+        }
+
+        function pixelateImageData(imageData, pixelSize) {
+            const { width, height, data } = imageData;
+            const pixelated = new ImageData(width, height);
+
+            for (let y = 0; y < height; y += pixelSize) {
+                for (let x = 0; x < width; x += pixelSize) {
+                    // Get average color for this pixel block
+                    let r = 0, g = 0, b = 0, count = 0;
+
+                    for (let dy = 0; dy < pixelSize && y + dy < height; dy++) {
+                        for (let dx = 0; dx < pixelSize && x + dx < width; dx++) {
+                            const idx = ((y + dy) * width + (x + dx)) * 4;
+                            r += data[idx];
+                            g += data[idx + 1];
+                            b += data[idx + 2];
+                            count++;
+                        }
+                    }
+
+                    r = Math.round(r / count);
+                    g = Math.round(g / count);
+                    b = Math.round(b / count);
+
+                    // Fill the pixel block with average color
+                    for (let dy = 0; dy < pixelSize && y + dy < height; dy++) {
+                        for (let dx = 0; dx < pixelSize && x + dx < width; dx++) {
+                            const idx = ((y + dy) * width + (x + dx)) * 4;
+                            pixelated.data[idx] = r;
+                            pixelated.data[idx + 1] = g;
+                            pixelated.data[idx + 2] = b;
+                            pixelated.data[idx + 3] = 255;
+                        }
+                    }
+                }
+            }
+
+            return pixelated;
+        }
+
+        async function processAllImages() {
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            statusDiv.textContent = 'Processing images...';
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                try {
+                    await pixelateImage(imageFiles[i], i);
+                    statusDiv.textContent = `Processed ${i + 1}/${imageFiles.length} images...`;
+                } catch (error) {
+                    console.error(error);
+                    statusDiv.textContent += `\nError with ${imageFiles[i]}: ${error}`;
+                }
+            }
+
+            statusDiv.innerHTML = `
+                <strong>✅ All done! ${imageFiles.length} photos pixelated!</strong><br>
+                <br>
+                <strong>NEXT STEPS:</strong><br>
+                1. Right-click each "Download Photo" link below<br>
+                2. Save as photo1_pixelated.png, photo2_pixelated.png, etc.<br>
+                3. Save them to /Users/bloopz/Valentines2.0/Images/<br>
+                4. Then I'll integrate them into the finale!
+            `;
+        }
+    </script>
+</body>
+
+</html>
